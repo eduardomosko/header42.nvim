@@ -17,7 +17,7 @@ You may configure your username and email as such:
 local header = require 'header42'
 
 header.user = 'emendes-'
-header.email = '@students.42sp.org.br'
+header.mail = '@students.42sp.org.br'
 
 -- Add support to other languages:
 -- header.types['/regex/'] = {'begin-comment', 'filler', 'end-comment'}
