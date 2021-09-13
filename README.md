@@ -36,4 +36,4 @@ header.setup({
 
 header42.nvim does not provide default mappings, so you can map a to the command `<cmd>Stdheader`.
 
-Although this plugins does not provide mappings, it setups `autocmd` to update the header.
+Although this plugins does not provide mappings, it sets up `autocmd` to update the header.
