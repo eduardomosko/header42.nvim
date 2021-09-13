@@ -6,7 +6,7 @@
 --   By: vgoncalv <vgoncalv@student.42sp.org.br>    +#+  +:+       +#+        --
 --                                                +#+#+#+#+#+   +#+           --
 --   Created: 2021/09/12 20:57:30 by vgoncalv          #+#    #+#             --
---   Updated: 2021/09/12 20:57:30 by vgoncalv         ###   ########.fr       --
+--   Updated: 2021/09/13 08:49:06 by vgoncalv         ###   ########.fr       --
 --                                                                            --
 -- -------------------------------------------------------------------------- --
 
@@ -16,6 +16,7 @@ local config = require("header42.config").values
 local constants = require("header42.constants")
 
 local fn = vim.fn
+local bo = vim.bo
 
 --- Formats the header for insertion
 local function format_header(start_comment, end_comment, fill_comment)
@@ -54,8 +55,8 @@ end
 
 -- Updates if header is already present on the file
 header.update = function(start_comment, end_comment)
-	-- Check if filetype is supported
-	if config.ft[vim.bo.filetype] == nil then
+	-- Check if filetype is supported or if file was not modified
+	if config.ft[bo.filetype] == nil or not bo.mod then
 		return false
 	end
 
