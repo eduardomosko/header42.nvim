@@ -15,6 +15,7 @@ local M = {}
 local config = require("header42.config")
 local utils = require("header42.utils")
 local bo = vim.bo
+local api = vim.api
 
 M.setup = function(opts)
 	config.set(opts)
@@ -78,7 +79,7 @@ _G.Stdheader_update = function()
 	require("header42.header").update(start_comment, end_comment)
 end
 
-vim.api.nvim_command([[command! Stdheader lua Stdheader()]])
-vim.api.nvim_command([[autocmd BufWritePre * lua Stdheader_update()]])
+api.nvim_command([[command! Stdheader lua Stdheader()]])
+api.nvim_command([[autocmd BufWritePre * lua Stdheader_update()]])
 
 return M
