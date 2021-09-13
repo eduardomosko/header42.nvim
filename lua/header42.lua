@@ -53,6 +53,25 @@ end
 _G.Stdheader_update = function()
 	local filetype = bo.filetype
 
+	-- Error handling
+	if config.values.ft[filetype] == nil then
+		return
+	else
+		local fields = { "start_comment", "end_comment", "fill_comment" }
+		for _, field in ipairs(fields) do
+			if config.values.ft[filetype][field] == nil then
+				utils.warn(
+					string.format(
+						"Could not update. Reason: Missing required field for filetype '%s': %s",
+						filetype,
+						field
+					)
+				)
+				return
+			end
+		end
+	end
+
 	local start_comment = config.values.ft[filetype].start_comment
 	local end_comment = config.values.ft[filetype].end_comment
 
