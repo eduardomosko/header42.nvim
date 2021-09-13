@@ -32,6 +32,15 @@ header.setup({
 })
 ```
 
+## Supported Filetypes by Default
+
+- `c` for C files
+- `cpp` for C++ and header files
+- `python` for python files
+- `lua` for lua files
+- `make` for Makefiles
+- `vim` for vimscript files
+
 ## Mappings
 
 header42.nvim does not provide default mappings, so you can map a to the command `<cmd>Stdheader`.
