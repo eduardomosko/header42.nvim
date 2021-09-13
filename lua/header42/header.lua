@@ -6,7 +6,7 @@
 --   By: vgoncalv <vgoncalv@student.42sp.org.br>    +#+  +:+       +#+        --
 --                                                +#+#+#+#+#+   +#+           --
 --   Created: 2021/09/12 20:57:30 by vgoncalv          #+#    #+#             --
---   Updated: 2021/09/13 12:11:44 by vgoncalv         ###   ########.fr       --
+--   Updated: 2021/09/13 15:16:55 by vgoncalv         ###   ########.fr       --
 --                                                                            --
 -- -------------------------------------------------------------------------- --
 
@@ -24,7 +24,13 @@ local function format_header(start_comment, end_comment, fill_comment)
 
 	-- Calculate spaces to keep the header tidy
 	local SPACES_AFTER_FILENAME = constants.length - (2 * constants.margin) - string.len(filename) - 19
-	local SPACES_AFTER_EMAIL = constants.length - (2 * constants.margin) - string.len(config.mail) - 38
+	local SPACES_AFTER_EMAIL = constants.length
+		- (2 * constants.margin)
+		- string.len(config.mail)
+		- string.len(config.user)
+		- 30
+	local SPACES_AFTER_CREATED = constants.length - (2 * constants.margin) - string.len(config.user) - 52
+	local SPACES_AFTER_UPDATED = SPACES_AFTER_CREATED - 1
 
 	-- stylua: ignore
 	return string.format(constants.header,
@@ -35,8 +41,8 @@ local function format_header(start_comment, end_comment, fill_comment)
 		start_comment, end_comment,
 		start_comment, config.user, config.mail, string.rep(' ', SPACES_AFTER_EMAIL), end_comment,
 		start_comment, end_comment,
-		start_comment, fn.strftime("%Y/%m/%d %H:%M:%S"), config.user, end_comment,
-		start_comment, fn.strftime("%Y/%m/%d %H:%M:%S"), config.user, end_comment,
+		start_comment, fn.strftime("%Y/%m/%d %H:%M:%S"), config.user, string.rep(' ', SPACES_AFTER_CREATED), end_comment,
+		start_comment, fn.strftime("%Y/%m/%d %H:%M:%S"), config.user, string.rep(' ', SPACES_AFTER_UPDATED), end_comment,
 		start_comment, end_comment,
 		start_comment, string.rep(fill_comment, 74), end_comment
 	)
@@ -71,6 +77,7 @@ header.update = function(start_comment, end_comment)
 	if found then
 		local filename = fn.expand("%:t")
 		local SPACES_AFTER_FILENAME = constants.length - (2 * constants.margin) - string.len(filename) - 19
+		local SPACES_AFTER_UPDATED = constants.length - (2 * constants.margin) - string.len(config.user) - 53
 
 		-- Sets the filename line(useful for when renaming files)
 		fn.setline(
@@ -88,10 +95,11 @@ header.update = function(start_comment, end_comment)
 		fn.setline(
 			9,
 			string.format(
-				"%2s   Updated: %19s by %7s         ###   ########.fr       %2s",
+				"%2s   Updated: %19s by %s%s###   ########.fr       %2s",
 				start_comment,
 				fn.strftime("%Y/%m/%d %H:%M:%S"),
 				config.user,
+				string.rep(" ", SPACES_AFTER_UPDATED),
 				end_comment
 			)
 		)
