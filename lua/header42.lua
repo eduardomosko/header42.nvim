@@ -10,136 +10,56 @@
 --                                                                            --
 -- -------------------------------------------------------------------------- --
 
-local asciiart = {
-	         ":::      ::::::::",
-	       ":+:      :+:    :+:",
-	     "+:+ +:+         +:+  ",
-	   "+#+  +:+       +#+     ",
-	 "+#+#+#+#+#+   +#+        ",
-	      "#+#    #+#          ",
-	     "###   ########.fr    "
-}
+local M = {}
 
-local config = {
-	user = "marvin",
-	mail = "@42.fr",
-	types = {}
-}
+local config = require("header42.config")
+local utils = require("header42.utils")
+local bo = vim.bo
 
-local _start	= '/*'
-local _end		= '*/'
-local _fill		= '*'
-local _length	= 80
-local _margin	= 5
-
-config.types['\\.htm$\\|\\.html$\\|\\.xml$'] = {'<!--', '-->', '*'}
-config.types["\\.l$\\|\\.lua$"] = {'--', '--', '-'}
-config.types['\\.js$'] = {'//', '//', '*'}
-config.types['\\.tex$'] = {'\\', '\\', '*'}
-config.types['\\.ml$\\|\\.mli$\\|\\.mll$\\|\\.mly$'] = {'(*', '*)', '*'}
-config.types['\\.vim$\\|vimrc$'] = {'"', '"', '*'}
-config.types['\\.el$\\|emacs$'] = {';', ';', '*'}
-config.types['\\.f90$\\|\\.f95$\\|\\.f03$\\|\\.f$\\|\\.for$'] = {'!', '!', '/'}
-config.types['\\.c$\\|\\.h$\\|\\.cc$\\|\\.hh$\\|\\.cpp$\\|\\.hpp$\\|\\.php$'] = {'/*', '*/', '*'}
-
-local function filename()
-	return vim.fn.expand("%:t") or "< new >"
+M.setup = function(opts)
+	config.set(opts)
 end
 
-local function filetype()
-	local f = filename()
+--- Global function for command!
+_G.Stdheader = function()
+	local filetype = bo.filetype
 
-	for type, chars in pairs(config.types) do
-		local re = vim.regex(type)
-		if re:match_str(f) then
-			_start	= chars[1]
-			_end	= chars[2]
-			_fill	= chars[3]
-			return
+	-- Error handling
+	if config.values.ft[filetype] == nil then
+		utils.error(string.format("Filetype '%s' is not registered", filetype))
+		return
+	else
+		local fields = { "start_comment", "end_comment", "fill_comment" }
+		for _, field in ipairs(fields) do
+			if config.values.ft[filetype][field] == nil then
+				utils.error(string.format("Missing required field for filetype '%s': %s", filetype, field))
+				return
+			end
 		end
 	end
-end
 
-local function ascii(n)
-	return asciiart[n - 2]
-end
+	local header = require("header42.header")
+	local start_comment = config.values.ft[filetype].start_comment
+	local end_comment = config.values.ft[filetype].end_comment
+	local fill_comment = config.values.ft[filetype].fill_comment
 
-local function textline(left, right)
-	right = right or ""
-
-	local l	= _start .. string.rep(' ', _margin - #_start) .. left
-	local r = string.rep(' ', _length - _margin * 2 - #left - #right) .. right .. string.rep(' ', _margin - #_end) .. _end
-	return (l .. r):sub(0, _length)
-end
-
-
-local function user()
-	return config.user
-end
-
-
-local function mail()
-	return config.user .. config.mail
-end
-
-
-local function date()
-	return vim.fn.strftime "%Y/%m/%d %H:%M:%S"
-end
-
-local function line(n)
-	if n == 1 or n == 11 then -- top and bottom line
-		return _start .. ' ' .. string.rep(_fill, _length - #_start - #_end - 2) .. ' ' .. _end
-	elseif n == 2 or n == 10 then -- blank line
-		return textline('', '')
-	elseif n == 3 or n == 5 or n == 7 then -- empty with ascii
-		return textline('', ascii(n))
-	elseif n == 4 then -- filename
-		return textline(filename(), ascii(n))
-	elseif n == 6 then -- author
-		return textline("By: " .. user() .. " <" .. mail() .. ">", ascii(n))
-	elseif n == 8 then -- created
-		return textline("Created: " .. date() .. " by " .. user(), ascii(n))
-	elseif n == 9 then -- updated
-		return textline("Updated: " .. date() .. " by " .. user(), ascii(n))
+	-- If header was not updated, insert it
+	if not header.update(start_comment, end_comment) then
+		error("entrei por algum motivo")
+		header.insert(start_comment, end_comment, fill_comment)
 	end
 end
 
+_G.Stdheader_update = function()
+	local filetype = bo.filetype
 
-local function insert()
-	local lineno = 11
-	filetype()
+	local start_comment = config.values.ft[filetype].start_comment
+	local end_comment = config.values.ft[filetype].end_comment
 
-	-- empty line after header
-	vim.fn.append(0, "")
-
-	-- loop over lines
-	while lineno > 0 do
-		vim.fn.append(0, line(lineno))
-		lineno = lineno - 1
-	end
+	require("header42.header").update(start_comment, end_comment)
 end
 
-local function update()
-	filetype()
-	local getline = vim.fn.getline
+vim.api.nvim_command([[command! Stdheader lua Stdheader()]])
+vim.api.nvim_command([[autocmd BufWritePre * lua Stdheader_update()]])
 
-	local found = getline(9):find(_start .. string.rep(' ', _margin - #_start) .. "Updated: ")
-	if found then
-		vim.fn.setline(9, line(9))
-		vim.fn.setline(4, line(4))
-		return false
-	end
-	return true
-end
-
-function Stdheader()
-	if update() then
-		insert()
-	end
-end
-
--- Bind command and shortcut
-vim.api.nvim_command("command! Stdheader lua Stdheader()")
-
-return config
+return M
