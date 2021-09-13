@@ -6,7 +6,7 @@
 --   By: vgoncalv <vgoncalv@student.42sp.org.br>    +#+  +:+       +#+        --
 --                                                +#+#+#+#+#+   +#+           --
 --   Created: 2021/09/12 20:57:30 by vgoncalv          #+#    #+#             --
---   Updated: 2021/09/13 08:49:06 by vgoncalv         ###   ########.fr       --
+--   Updated: 2021/09/13 12:11:44 by vgoncalv         ###   ########.fr       --
 --                                                                            --
 -- -------------------------------------------------------------------------- --
 
@@ -55,9 +55,14 @@ end
 
 -- Updates if header is already present on the file
 header.update = function(start_comment, end_comment)
-	-- Check if filetype is supported or if file was not modified
-	if config.ft[bo.filetype] == nil or not bo.mod then
+	-- Check if filetype is supported
+	if config.ft[bo.filetype] == nil then
 		return false
+	end
+
+	-- Check if file was modified
+	if bo.mod then
+		return true
 	end
 
 	-- Searches for the "Updated by" line of the header

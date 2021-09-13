@@ -6,7 +6,7 @@
 --   By: emendes- <emendes-@students.42sp.org.br>   +#+  +:+       +#+        --
 --                                                +#+#+#+#+#+   +#+           --
 --   Created: 2021/05/15 11:51:46 by emendes-          #+#    #+#             --
---   Updated: 2021/09/12 21:24:52 by vgoncalv         ###   ########.fr       --
+--   Updated: 2021/09/13 12:08:57 by vgoncalv         ###   ########.fr       --
 --                                                                            --
 -- -------------------------------------------------------------------------- --
 
@@ -45,6 +45,7 @@ _G.Stdheader = function()
 
 	-- If header was not updated, insert it
 	if not header.update(start_comment, end_comment) then
+		print("entrei aqui F")
 		header.insert(start_comment, end_comment, fill_comment)
 	end
 end
