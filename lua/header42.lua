@@ -46,7 +46,6 @@ _G.Stdheader = function()
 
 	-- If header was not updated, insert it
 	if not header.update(start_comment, end_comment) then
-		print("entrei aqui F")
 		header.insert(start_comment, end_comment, fill_comment)
 	end
 end
