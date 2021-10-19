@@ -3,7 +3,7 @@ local utils = {}
 --- Log message
 local function log(msg, hl)
 	hl = hl or "String"
-	vim.api.nvim_echo({ { "[asdf.nvim] ", hl }, { msg } }, true, {})
+	vim.api.nvim_echo({ { "[header42.nvim] ", hl }, { msg } }, true, {})
 end
 
 --- Warning log message
