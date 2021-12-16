@@ -61,10 +61,6 @@ header.update = function(ft_config)
 	if config.ft[bo.filetype] == nil then
 		return false
 	end
-	-- Check if file was modified
-	if bo.mod then
-		return true
-	end
 	local user = ft_config.user or config.user
 	-- Searches for the "Updated by" line of the header
 	local found = fn.getline(9):find(
