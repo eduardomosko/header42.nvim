@@ -1,3 +1,6 @@
+This repository will no longer be maintained. I recommend moving to https://github.com/vinicius507/header42.nvim.
+
+
 # header42.nvim
 
 École 42's stdheader plugin written in Lua
