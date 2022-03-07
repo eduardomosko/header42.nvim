@@ -1,9 +1,8 @@
 # header42.nvim
-42's stdheader plugin written in Lua
 
-Same as [stdheader](https://github.com/42og/stdheader.vim), but in lua.
+École 42's stdheader plugin written in Lua
 
-Also fixes an annoying but clipped your email.
+## Installation
 
 Just install using your package manager of choice:
 
@@ -11,23 +10,39 @@ Just install using your package manager of choice:
 use 'eduardomosko/header42.nvim'
 ```
 
+
+## Setup
+
 You may configure your username and email as such:
 
 ```lua
-local header = require 'header42'
+local header = require('header42')
 
-header.user = 'emendes-'
-header.mail = '@students.42sp.org.br'
-
--- Add support to other languages:
--- header.types['/regex/'] = {'begin-comment', 'filler', 'end-comment'}
-
-header.types['\\.sh$\\|\\.py$'] = {'#', '*', '#'}
+header.setup({
+	user = 'marvin',
+	mail = 'marvin@42.fr',
+	-- You can also extend filetypes, e.g:
+	ft = {
+		lua = {
+			start_comment = '--',
+			end_comment = '--',
+			fill_comment = '-',
+		}
+	}
+})
 ```
 
-And map as wanted:
+## Supported Filetypes by Default
 
-```lua
-vim.cmd 'nnoremap <F1> :Stdheader'
-vim.cmd 'autocmd BufNewFile *.c,*.h :Stdheader'
-```
+- `c` for C files
+- `cpp` for C++ and header files
+- `python` for python files
+- `lua` for lua files
+- `make` for Makefiles
+- `vim` for vimscript files
+
+## Mappings
+
+header42.nvim does not provide default mappings, so you can map a to the command `<cmd>Stdheader`.
+
+Although this plugins does not provide mappings, it sets up `autocmd` to update the header.
